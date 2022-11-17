@@ -84,9 +84,14 @@
             <div v-if="editFlag.developmentMastering">
                 <ckeditor :editor="editor" v-model="planHTML.developmentMastering" :config="allConfig.developmentMastering"/>
                 <p></p>
+                <div v-if="exampleFlag['developmentMastering']">
+                    <pre class="border border-secondary rounded">
+                        – Освоить аппарат … и … .
+                        – Научиться применять понятийный аппарат… для … решения практических задач профессиональной деятельности.</pre>
+                </div>
             </div>
             <div v-else>
-                <p class="text-left">{{ plan.developmentMastering }}</p>
+                <div v-html=planHTML.developmentMastering></div>
                 <p></p>
             </div>
         </div>
@@ -127,9 +132,15 @@
             <div v-if="editFlag.entranceRequirements">
                 <ckeditor :editor="editor" v-model="planHTML.entranceRequirements" :config="allConfig.entranceRequirements" />
                 <p></p>
+                <div v-if="exampleFlag['entranceRequirements']">
+                    <pre class="border border-secondary rounded">
+                        Для успешного освоения дисциплины требуются компетенции, сформированные в ходе освоения образовательных программ
+                        предшествующего уровня образования.
+                        Для успешного освоения дисциплины требуются результаты обучения по следующим дисциплинам: … .</pre>
+                </div>
             </div>
             <div v-else>
-                <p class="text-left">{{ plan.entranceRequirements }}</p>
+                <div v-html=planHTML.entranceRequirements></div>
                 <p></p>
             </div>
         </div>
@@ -170,9 +181,19 @@
             <div v-if="editFlag.contentDiscipline">
                 <ckeditor :editor="editor" v-model="planHTML.contentDiscipline" :config="allConfig.contentDiscipline" />
                 <p></p>
+                <div v-if="exampleFlag['contentDiscipline']">
+                    <pre class="border border-secondary rounded">
+                        Тема 1. История компьютерных наук
+                        Тема 2. История компьютерных наук в ТГУ
+                        Тема 3. История языков программирования
+                        Тема 4. IT индустрия - текущее состояние в мире
+                        Тема 5. Требования рынка
+                        Тема 6. Что должен знать хороший программист?
+                        Тема 7. Гостевые лекции - бизнес визиты</pre>
+                </div>
             </div>
             <div v-else>
-                <p class="text-left">{{ plan.contentDiscipline }}</p>
+                <div v-html=planHTML.contentDiscipline></div>
                 <p></p>
             </div>
         </div>
@@ -191,9 +212,15 @@
             <div v-if="editFlag.currentControl">
                 <ckeditor :editor="editor" v-model="planHTML.currentControl" :config="allConfig.currentControl" />
                 <p></p>
+                <div v-if="exampleFlag['currentControl']">
+                    <pre class="border border-secondary rounded">
+                        Текущий контроль по дисциплине проводится путем контроля посещаемости, проведения контрольных работ, тестов по
+                        лекционному материалу, деловых игр по темам, выполнения домашних заданий, …, и фиксируется в форме контрольной точки не
+                        менее одного раза в семестр.</pre>
+                </div>
             </div>
             <div v-else>
-                <p class="text-left">{{ plan.currentControl }}</p>
+                <div v-html=planHTML.currentControl></div>
                 <p></p>
             </div>
         </div>
@@ -212,9 +239,58 @@
             <div v-if="editFlag.evaluationProcedure">
                 <ckeditor :editor="editor" v-model="planHTML.evaluationProcedure" :config="allConfig.evaluationProcedure" />
                 <p></p>
+                <div v-if="exampleFlag['evaluationProcedure']">
+                    <pre class="border border-secondary rounded">
+                        Зачет с оценкой в первом семестре проводится в письменной форме по билетам. Билет содержит теоретический вопрос и две
+                        задачи. Продолжительность зачета 1,5 часа.
+                        Примерный перечень теоретических вопросов
+                        1. Вопрос 1.
+                        2. Вопрос 2.
+                        3. …
+                        
+                        Примеры задач:
+                        1. Задача 1.
+                        Дано: …
+                        Требуется: …
+                        
+                        Результаты зачета с оценкой определяются оценками «отлично», «хорошо», «удовлетворительно», «неудовлетворительно».
+                        Далее необходимо описать каким образом текущий контроль влияет на промежуточную аттестацию и в каком случае ставится
+                        «отлично», «хорошо», «удовлетворительно», «неудовлетворительно».
+                        В случае применения балльно-рейтинговой системы, они описывается в п.9 и п.11 с учетом текущего контроля и промежуточной
+                        аттестации, на промежуточную аттестацию планируется не более 40% рейтинга.
+                        В случае применения систем оценивания, отличных от пятибалльной, описать механизм перевода оценки в пятибалльную шкалу.
+                        
+                        Экзамен во втором семестре проводится в письменной форме по билетам. Экзаменационный билет состоит из трех частей.
+                        Продолжительность экзамена 1,5 часа.
+                        Структура экзамена должна соответствовать компетентностной структуре дисциплине. При описании системы оценивания
+                        итогового контроля по дисциплине необходимо продемонстрировать достижение всех запланированных индикаторов – результатов
+                        обучения.
+                        Например,
+                        Первая часть представляет собой тест из 5 вопросов, проверяющих ИУК-1.1. Ответы на вопросы первой части даются путем
+                        выбора из списка предложенных.
+                        Вторая часть содержит один вопрос, проверяющий ИОПК-2.2. Ответ на вопрос второй части дается в развернутой форме.
+                        Третья часть содержит 2 вопроса, проверяющих ИПК-3.3 и оформленные в виде практических задач. Ответы на вопросы третьей
+                        части предполагают решение задач и краткую интерпретацию полученных результатов.
+                        Примерный перечень теоретических вопросов
+                        1. Вопрос 1.
+                        2. Вопрос 2.
+                        3. …
+                        
+                        Примеры задач:
+                        1. Задача 1.
+                        Дано: …
+                        Требуется: …
+                        
+                        Результаты экзамена определяются оценками «отлично», «хорошо», «удовлетворительно», «неудовлетворительно».
+                        Далее необходимо описать каким образом текущий контроль влияет на промежуточную аттестацию и в каком случае ставится
+                        «отлично», «хорошо», «удовлетворительно», «неудовлетворительно».
+                        В случае применения балльно-рейтинговой системы, они описывается в п.9 и п.11 с учетом текущего контроля и промежуточной
+                        аттестации, на промежуточную аттестацию планируется не более 40% рейтинга.
+                        В случае применения систем оценивания, отличных от пятибалльной, описать механизм перевода оценки в пятибалльную шкалу.</pre>
+                </div>
             </div>
             <div v-else>
-                <p class="text-left">{{ plan.evaluationProcedure }}</p>
+                <div v-html=planHTML.evaluationProcedure></div>
                 <p></p>
             </div>
         </div>
@@ -233,9 +309,18 @@
             <div v-if="editFlag.methodologicalSupport">
                 <ckeditor :editor="editor" v-model="planHTML.methodologicalSupport" :config="allConfig.methodologicalSupport" />
                 <p></p>
+                <div v-if="exampleFlag['methodologicalSupport']">
+                    <pre class="border border-secondary rounded">
+                        а) Электронный учебный курс по дисциплине в электронном университете «Moodle» -
+                        https://moodle.tsu.ru/course/view.php?id=00000
+                        б) Оценочные материалы текущего контроля и промежуточной аттестации по дисциплине.
+                        в) План семинарских / практических занятий по дисциплине.
+                        г) Методические указания по проведению лабораторных работ.
+                        д) Методические указания по организации самостоятельной работы студентов.</pre>
+                </div>
             </div>
             <div v-else>
-                <p class="text-left">{{ plan.methodologicalSupport }}</p>
+                <div v-html=planHTML.methodologicalSupport></div>
                 <p></p>
             </div>
         </div>
@@ -254,9 +339,30 @@
             <div v-if="editFlag.references">
                 <ckeditor :editor="editor" v-model="planHTML.references" :config="allConfig.references" />
                 <p></p>
+                <div v-if="exampleFlag['references']">
+                    <pre class="border border-secondary rounded">
+                        а) основная литература:
+                        – Агарков А.П. Экономика и управление на предприятии / А.П. Агарков [и др.]. – М.: Дашков и Ко, 2021. – 400 с.
+                        – Менеджмент: Учебник для бакалавров / Е. Л. Маслова. – М.: Издательско-торговая корпорация «Дашков и К°», 2022. – 336
+                        с. – URL: http://znanium.com/catalog.php?bookinfo=51388
+                        – …
+                        
+                        б) дополнительная литература:
+                        – Основы теории управления: Учебное пособие/А.П. Балашов - М.: Вузовский учебник, НИЦ ИНФРА-М, 2021. - 280 с. - URL:
+                        http://znanium.com/bookread2.php?book=49191
+                        – …
+                        
+                        в) ресурсы сети Интернет:
+                        – открытые онлайн-курсы
+                        – Журнал «Эксперт» - http://www.expert.ru
+                        – Официальный сайт Федеральной службы государственной статистики РФ - www.gsk.ru
+                        – Официальный сайт Всемирного банка - www.worldbank.org
+                        – Общероссийская Сеть КонсультантПлюс Справочная правовая система. http://www.consultant.ru
+                        – …</pre>
+                </div>
             </div>
             <div v-else>
-                <p class="text-left">{{ plan.references }}</p>
+                <div v-html=planHTML.references></div>
                 <p></p>
             </div>
         </div>
@@ -275,9 +381,33 @@
             <div v-if="editFlag.listInformationTechnologies">
                 <ckeditor :editor="editor" v-model="planHTML.listInformationTechnologies" :config="allConfig.listInformationTechnologies" />
                 <p></p>
+                <div v-if="exampleFlag['listInformationTechnologies']">
+                    <pre class="border border-secondary rounded">
+                        а) лицензионное и свободно распространяемое программное обеспечение:
+                        – Microsoft Office Standart 2013 Russian: пакет программ. Включает приложения: MS Office Word, MS Office Excel, MS
+                        Office PowerPoint, MS Office On-eNote, MS Office Publisher, MS Outlook, MS Office Web Apps (Word Excel MS PowerPoint
+                        Outlook);
+                        – публично доступные облачные технологии (Google Docs, Яндекс диск и т.п.).
+                        
+                        б) информационные справочные системы:
+                        – Электронный каталог Научной библиотеки ТГУ – http://chamo.lib.tsu.ru/search/query?locale=ruHYPERLINK
+                        "http://chamo.lib.tsu.ru/search/query?locale=ru&theme=system"&HYPERLINK
+                        "http://chamo.lib.tsu.ru/search/query?locale=ru&theme=system"theme=system
+                        – Электронная библиотека (репозиторий) ТГУ – http://vital.lib.tsu.ru/vital/access/manager/Index
+                        – ЭБС Лань – http://e.lanbook.com/
+                        – ЭБС Консультант студента – http://www.studentlibrary.ru/
+                        – Образовательная платформа Юрайт – https://urait.ru/
+                        – ЭБС ZNANIUM.com – https://znanium.com/
+                        – ЭБС IPRbooks – http://www.iprbookshop.ru/
+                        
+                        в) профессиональные базы данных (при наличии):
+                        – Университетская информационная система РОССИЯ – https://uisrussia.msu.ru/
+                        – Единая межведомственная информационно-статистическая система (ЕМИСС) – https://www.fedstat.ru/
+                        – …</pre>
+                </div>
             </div>
             <div v-else>
-                <p class="text-left">{{ plan.listInformationTechnologies }}</p>
+                <div v-html=planHTML.listInformationTechnologies></div>
                 <p></p>
             </div>
         </div>
@@ -297,9 +427,20 @@
             <div v-if="editFlag.materialSupport">
                 <ckeditor :editor="editor" v-model="planHTML.materialSupport" :config="allConfig.materialSupport" />
                 <p></p>
+                <div v-if="exampleFlag['materialSupport']">
+                    <pre class="border border-secondary rounded">
+                        Аудитории для проведения занятий лекционного типа.
+                        Аудитории для проведения занятий семинарского типа, индивидуальных и групповых консультаций, текущего контроля и
+                        промежуточной аттестации.
+                        Помещения для самостоятельной работы, оснащенные компьютерной техникой и доступом к сети Интернет, в электронную
+                        информационно-образовательную среду и к информационным справочным системам.
+                        Лаборатории, оборудованные …
+                        Аудитории для проведения занятий лекционного и семинарского типа индивидуальных и групповых консультаций, текущего
+                        контроля и промежуточной аттестации в смешенном формате («Актру»).</pre>
+                </div>
             </div>
             <div v-else>
-                <p class="text-left">{{ plan.materialSupport }}</p>
+                <div v-html=planHTML.materialSupport></div>
                 <p></p>
             </div>
         </div>
@@ -314,11 +455,15 @@
         <div v-if="UnwrapFlag['informationDevelopers']" @dblclick="EditFieldPlan('informationDevelopers')">
             <div v-if="editFlag.informationDevelopers === false"><p class="text-left" v-if="plan.informationDevelopers === ''">Здесь пусто!</p></div>
             <div v-if="editFlag.informationDevelopers">
-                <ckeditor :editor="editor" v-model="planHTML.informationDevelopers" :config="allConfig.informationDevelopers" />
+                    <ckeditor :editor="editor" v-model="planHTML.informationDevelopers" :config="allConfig.informationDevelopers" />
                 <p></p>
+                <div v-if="exampleFlag['informationDevelopers']">
+                    <pre class="border border-secondary rounded">
+                        Фамилия Имя Отчество, ученая степень, ученое звание, место работы, должность</pre>
+                </div>
             </div>
             <div v-else>
-                <p class="text-left">{{ plan.informationDevelopers }}</p>
+                    <div v-html=planHTML.informationDevelopers></div>
                 <p></p>
             </div>
         </div>
@@ -336,10 +481,14 @@ import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import { Vue } from "vue";
+import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
+import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
+import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 
 window.addEventListener('keydown', (e) => {
     if(e.keyCode == 9) {
@@ -357,6 +506,18 @@ class TabPlagin extends Plugin{
                 );
             });
         })
+    }
+}
+
+class EnterPlagin extends Plugin {
+    init() {
+        const editor = this.editor;
+        var shiftAndEnter = editor.commands.get("shiftEnter");
+        var Enter = editor.commands.get("enter");
+        editor.commands.get("enter").destroy();
+        editor.commands.add("enter", shiftAndEnter)
+        editor.commands.get("shiftEnter").destroy();
+        editor.commands.add("shiftEnter", Enter)
     }
 }
 
@@ -385,6 +546,37 @@ class SaveButtonPlugin extends Plugin {
     }
 };
 
+class OpenExampleButtonPlugin extends Plugin {
+    init() {
+        const editor = this.editor;
+
+        // The button must be registered among the UI components of the editor
+        // to be displayed in the toolbar.
+        editor.ui.componentFactory.add('openExampleButton', () => {
+            // The button will be an instance of ButtonView.
+            const button = new ButtonView();
+            
+            button.set({
+                label: 'Open Example',
+                withText: true,
+                tooltip: true,
+            });
+
+            button.on('execute', () => {
+                if (button.label === "Open Example"){
+                    window.OpenE(editor.config.get("planKey"));
+                    button.label = "Close Example";
+                }else{
+                    window.CloseE(editor.config.get("planKey"));
+                    button.label = "Open Example";
+                }
+            });
+
+            return button;
+        });
+    }
+};
+
 const { convert } = require('html-to-text');
 
 export default {
@@ -397,6 +589,7 @@ export default {
             plan: {},
             planHTML: {},
             editFlag: {},
+            exampleFlag: {},
             UnwrapFlag:{},
             editor: ClassicEditor,
             allConfig:{},
@@ -410,30 +603,52 @@ export default {
                 for(var key in this.plan){
                     this.editFlag[key] = false;
                     this.UnwrapFlag[key] = false;
+                    this.exampleFlag[key] = false;
                     this.allConfig[key] = {
                         plugins: [
                             EssentialsPlugin,
-                            BoldPlugin,
-                            ItalicPlugin,
-                            LinkPlugin,
                             ParagraphPlugin,
                             SaveButtonPlugin,
                             TabPlagin,
+                            EnterPlagin,
+                            Clipboard,
+                            ListProperties,
+                            FindAndReplace,
+                            OpenExampleButtonPlugin,
+                            Table, 
+                            TableToolbar,
+
                         ],
                             // The configuration of the editor.
                             language: 'ru',
                                 toolbar: {
                             items: [
-                                'bold',
-                                'italic',
-                                'link',
+                                'numberedList',
+                                '|',
+                                'insertTable',
+                                '|',
+                                'findAndReplace',
+                                '|',
                                 'undo',
                                 'redo',
+                                '|',
+                                'openExampleButton',
                                 'savebutton',
-                            ]
+                                '|',
+                            ],
+                                    table: {
+                                        contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+                                    }
                         },
                         planKey: key,
                         saveFynction: this.SaveFieldPlan(),
+                        list: {
+                            properties: {
+                                styles: true,
+                                startIndex: true,
+                                reversed: true
+                            }
+                        }
                     }
                 }
                 this.UnwrapFlag['title'] = false;
@@ -459,6 +674,7 @@ export default {
                 this.plan[key] = text;
                 this.planHTML[key] = HTMLtext;
                 this.editFlag[key] = false;
+                this.CloseExamle(key);
             });   
         },
         EditFieldPlan(key){
@@ -469,11 +685,19 @@ export default {
         },
         RollUp(key){
             this.UnwrapFlag[key] = false;
-        }
+        },
+        OpenExamle(key){
+            this.exampleFlag[key] = true;
+        },
+        CloseExamle(key){
+            this.exampleFlag[key] = false;
+        },
     },
     beforeMount() {
         this.GetWorkProgram();
         window.SaveF = (key, HTMLtext) => this.SaveFieldPlan(key, HTMLtext)
+        window.OpenE = (key) => this.OpenExamle(key)
+        window.CloseE = (key) => this.CloseExamle(key)
     },
 }
 </script>
@@ -490,5 +714,20 @@ b{
         -moz-user-select: none;
         -ms-user-select: none;
         user-select: none;
+}
+
+table{
+    border: 1px solid black;
+    width: 100%;
+}
+
+tr{
+    border: 1px solid black;
+}
+
+td{
+    width: 30%;
+    border: 1px solid black;
+    position: relative;
 }
 </style>
