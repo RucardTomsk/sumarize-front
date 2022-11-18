@@ -1,4 +1,5 @@
 <template>
+    <div id="element-to-print">
     <div class="container">
         <p class="text-left">
             <i class="bi bi-caret-down-fill" v-if="UnwrapFlag.title"
@@ -91,7 +92,7 @@
                 </div>
             </div>
             <div v-else>
-                <div v-html=planHTML.developmentMastering></div>
+                <div v-html=plan.developmentMastering></div>
                 <p></p>
             </div>
         </div>
@@ -140,7 +141,7 @@
                 </div>
             </div>
             <div v-else>
-                <div v-html=planHTML.entranceRequirements></div>
+                <div v-html=plan.entranceRequirements></div>
                 <p></p>
             </div>
         </div>
@@ -193,7 +194,7 @@
                 </div>
             </div>
             <div v-else>
-                <div v-html=planHTML.contentDiscipline></div>
+                <div v-html=plan.contentDiscipline></div>
                 <p></p>
             </div>
         </div>
@@ -220,7 +221,7 @@
                 </div>
             </div>
             <div v-else>
-                <div v-html=planHTML.currentControl></div>
+                <div v-html=plan.currentControl></div>
                 <p></p>
             </div>
         </div>
@@ -290,7 +291,7 @@
                 </div>
             </div>
             <div v-else>
-                <div v-html=planHTML.evaluationProcedure></div>
+                <div v-html=plan.evaluationProcedure></div>
                 <p></p>
             </div>
         </div>
@@ -320,7 +321,7 @@
                 </div>
             </div>
             <div v-else>
-                <div v-html=planHTML.methodologicalSupport></div>
+                <div v-html=plan.methodologicalSupport></div>
                 <p></p>
             </div>
         </div>
@@ -362,7 +363,7 @@
                 </div>
             </div>
             <div v-else>
-                <div v-html=planHTML.references></div>
+                <div v-html=plan.references></div>
                 <p></p>
             </div>
         </div>
@@ -407,7 +408,7 @@
                 </div>
             </div>
             <div v-else>
-                <div v-html=planHTML.listInformationTechnologies></div>
+                <div v-html=plan.listInformationTechnologies></div>
                 <p></p>
             </div>
         </div>
@@ -440,7 +441,7 @@
                 </div>
             </div>
             <div v-else>
-                <div v-html=planHTML.materialSupport></div>
+                <div v-html=plan.materialSupport></div>
                 <p></p>
             </div>
         </div>
@@ -463,11 +464,15 @@
                 </div>
             </div>
             <div v-else>
-                    <div v-html=planHTML.informationDevelopers></div>
+                    <div v-html=plan.informationDevelopers></div>
                 <p></p>
             </div>
         </div>
     </div>
+
+    <button type="button" class="btn btn-primary"  @click="$router.push(`/generate/${plan.guid}/pdf`)">Generate PDF</button>
+    <button type="button" class="btn btn-primary" @click="$router.push(`/generate/${plan.guid}/word`)">Generate WORD</button>
+</div>
 </template>
 
 <script lang="js">
@@ -489,6 +494,8 @@ import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
 import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
+import VueHtml2pdf from 'vue-html2pdf'
 
 window.addEventListener('keydown', (e) => {
     if(e.keyCode == 9) {
@@ -577,6 +584,18 @@ class OpenExampleButtonPlugin extends Plugin {
     }
 };
 
+class DisallowNestingTables extends Plugin{
+    init(){
+        const editor = this.editor;
+
+        editor.model.schema.addChildCheck((context, childDefinition) => {
+            if (childDefinition.name == 'table' && Array.from(context.getNames()).includes('table')) {
+                return false;
+            }
+        });
+    }
+}
+
 const { convert } = require('html-to-text');
 
 export default {
@@ -606,6 +625,9 @@ export default {
                     this.exampleFlag[key] = false;
                     this.allConfig[key] = {
                         plugins: [
+                            BoldPlugin,
+                            ItalicPlugin,
+                            LinkPlugin,
                             EssentialsPlugin,
                             ParagraphPlugin,
                             SaveButtonPlugin,
@@ -617,38 +639,36 @@ export default {
                             OpenExampleButtonPlugin,
                             Table, 
                             TableToolbar,
+                            DisallowNestingTables,
+                            Alignment,
 
                         ],
                             // The configuration of the editor.
                             language: 'ru',
                                 toolbar: {
                             items: [
+                                'bold','italic',
+                                '|',
+                                'link',
+                                '|',
                                 'numberedList',
                                 '|',
                                 'insertTable',
                                 '|',
+                                'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify',
+                                '|',
                                 'findAndReplace',
                                 '|',
-                                'undo',
-                                'redo',
+                                'undo','redo',
                                 '|',
-                                'openExampleButton',
-                                'savebutton',
+                                'openExampleButton','savebutton',
                                 '|',
                             ],
-                                    table: {
-                                        contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
-                                    }
+                        },
+                        table: {
+                            contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
                         },
                         planKey: key,
-                        saveFynction: this.SaveFieldPlan(),
-                        list: {
-                            properties: {
-                                styles: true,
-                                startIndex: true,
-                                reversed: true
-                            }
-                        }
                     }
                 }
                 this.UnwrapFlag['title'] = false;
@@ -663,14 +683,20 @@ export default {
             return text;
         },
         SaveFieldPlan(key,HTMLtext){
-            var text = this.ConvertHtmlToText(HTMLtext);
             var guid = this.$route.params.guid;
+            var text = HTMLtext
+            if (text.includes('class="table"')) {
+                text = text.replaceAll('<figure class="table">', '')
+                text = text.replaceAll('</figure>', '')
+                text = text.replaceAll('<table>', '<table class="table table-bordered">')
+            }
             axios.post("http://localhost:5050/plan/save-plan/" + guid + "_html/" + key, {
                 "Text": HTMLtext
             });
             axios.post("http://localhost:5050/plan/save-plan/" + guid +"/"+key,{
                 "Text":text
             }).then(()=>{
+                
                 this.plan[key] = text;
                 this.planHTML[key] = HTMLtext;
                 this.editFlag[key] = false;
@@ -714,20 +740,5 @@ b{
         -moz-user-select: none;
         -ms-user-select: none;
         user-select: none;
-}
-
-table{
-    border: 1px solid black;
-    width: 100%;
-}
-
-tr{
-    border: 1px solid black;
-}
-
-td{
-    width: 30%;
-    border: 1px solid black;
-    position: relative;
 }
 </style>

@@ -3,6 +3,7 @@ import Plans from "@/pages/Plans"
 import WorkProgram from "@/pages/WorkProgram"
 import Faculty from "@/pages/Faculty"
 import Programs from "@/pages/Programs"
+import GeneratePdf from "@/pages/GeneratePdf"
 import {createRouter, createWebHashHistory} from  "vue-router"
 
 const routes =[
@@ -25,6 +26,10 @@ const routes =[
     {
         path: '/program/:guid',
         component: Programs
+    },
+    {
+        path: '/generate/:guid/:type',
+        component: GeneratePdf
     }
 ]
 

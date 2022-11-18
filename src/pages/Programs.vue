@@ -43,6 +43,8 @@
         </div>
     </div>
 
+
+
 </template>
 
 
@@ -73,6 +75,7 @@ export default {
             this.flagLoads = true;
             let formData = new FormData();
             formData.append('file', this.file);
+            console.log(formData);
             axios.post('http://localhost:5050/plan/create-group-plans/' + this.$route.params.guid,
                 formData,
                 {
