@@ -1,6 +1,12 @@
 <template>
     
     <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><span @click="$router.push('/')">Факультеты</span></li>
+                <li class="breadcrumb-item active" aria-current="page">{{namef}}</li>
+            </ol>
+        </nav>
             <div class="row">
                 <div class="col"></div>
                 <div class="col-8">
@@ -56,6 +62,7 @@ export default {
             programs: [],
             file:'',
             flagLoads: false,
+            namef: "",
         }
     },
     methods: {
@@ -64,6 +71,8 @@ export default {
                 const response = await axios.get('http://localhost:5050/program/get-mas-program/' + this.$route.params.guid);
                 this.programs = response.data;
                 console.log(response)
+                const response_namef = await axios.get('http://localhost:5050/faculty/get-name/' + this.$route.params.guid);
+                this.namef = response_namef.data;
             } catch (e) {
                 alert("Ошибка", e)
             }

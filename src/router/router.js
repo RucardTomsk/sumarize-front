@@ -1,4 +1,3 @@
-import Main from "@/pages/Main"
 import Plans from "@/pages/Plans"
 import WorkProgram from "@/pages/WorkProgram"
 import Faculty from "@/pages/Faculty"
@@ -9,7 +8,7 @@ import {createRouter, createWebHashHistory} from  "vue-router"
 const routes =[
     {
         path:'/',
-        component: Main
+        component: Faculty
     },
     {
         path: '/plans/:guid',
@@ -18,10 +17,6 @@ const routes =[
     {
         path: '/plans/work-program/:guid',
         component: WorkProgram
-    },
-    {
-        path: '/faculties',
-        component: Faculty
     },
     {
         path: '/program/:guid',

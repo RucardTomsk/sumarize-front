@@ -1,5 +1,12 @@
 <template>
 <div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><span @click="$router.push('/')">Факультеты</span></li>
+            <li class="breadcrumb-item"><span @click="$router.back()">Программы</span></li>
+            <li class="breadcrumb-item active" aria-current="page">Планы</li>
+        </ol>
+    </nav>
     <div class="row">
         <div class="col"></div>
         <div class="col-8">

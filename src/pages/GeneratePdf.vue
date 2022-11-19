@@ -59,9 +59,15 @@
             </p>
             <p class="text-left" style="margin-top: -20px">Целью освоения дисциплины является формирование следующих компетенций:
             </p>
-            <p class="text-left" style="margin-top: -10px">{{ plan.purposeMastering }}</p>
+            <div v-for="pm in plan.purposeMastering">
+                <span class="text-left" style="margin-top: -10px">{{ pm }}</span>
+                <br>
+            </div>
             <p class="text-left">Результатами освоения дисциплины являются следующие индикаторы достижения компетенций:</p>
-            <p class="text-left" style="margin-top: -10px">{{ plan.resultsMastering }}</p>
+            <div v-for="pr in plan.resultsMastering">
+                <span class="text-left" style="margin-top: -10px">{{ pr }}</span>
+                <br>
+            </div>
         </div>
 
         <div class="container">
@@ -183,6 +189,8 @@ export default {
             try {
                 const response = await axios.get("http://localhost:5050/plan/get-work-program/" + this.$route.params.guid);
                 this.plan = response.data;
+                this.plan['purposeMastering'] = this.plan['purposeMastering'].split('\n');
+                this.plan['resultsMastering'] = this.plan['resultsMastering'].split('\n');
                 const response_html = await axios.get("http://localhost:5050/plan/get-work-program/" + this.$route.params.guid + '_html');
                 this.planHTML = response_html.data;
             } catch(e){
@@ -220,13 +228,19 @@ export default {
         if (this.$route.params.type === 'word') {
             this.exportToWord();
         }
-        this.$router.push(`/plans/work-program/${this.$route.params.guid}`)
+        this.$router.back()
+        //this.$router.push(`/plans/work-program/${this.$route.params.guid}`)
     },
 }
 </script>
 
 <style scoped>
 p {
+    font-family: 'Times New Roman';
+    font-size: 12;
+    white-space: pre-wrap;
+}
+span {
     font-family: 'Times New Roman';
     font-size: 12;
     white-space: pre-wrap;

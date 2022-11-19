@@ -78,10 +78,7 @@
             <i class="bi bi-caret-right-fill" v-else @click="Unwrap('developmentMastering')"></i>
             <b>2. Задачи освоения дисциплины <span class="badge bg-secondary">Редактируемое</span></b>
         </p>
-        <div v-if="UnwrapFlag['developmentMastering']" @dblclick="EditFieldPlan('developmentMastering')">
-            <div v-if="editFlag.developmentMastering === false">
-                <p class="text-left" v-if="plan.developmentMastering === ''">Здесь пусто!</p>
-            </div>
+        <div v-if="UnwrapFlag['developmentMastering']">
             <div v-if="editFlag.developmentMastering">
                 <ckeditor :editor="editor" v-model="planHTML.developmentMastering" :config="allConfig.developmentMastering"/>
                 <p></p>
@@ -92,9 +89,11 @@
                 </div>
             </div>
             <div v-else>
+                <i id="edit" class="bi bi-pencil-square" @click="EditFieldPlan('developmentMastering')"></i>
                 <div v-html=plan.developmentMastering></div>
                 <p></p>
             </div>
+
         </div>
     </div>
 
@@ -126,10 +125,8 @@
             <i class="bi bi-caret-right-fill" v-else @click="Unwrap('entranceRequirements')"></i>
             <b>5. Входные требования для освоения дисциплины <span class="badge bg-secondary">Редактируемое</span></b>
         </p>
-        <div v-if="UnwrapFlag['entranceRequirements']" @dblclick="EditFieldPlan('entranceRequirements')">
-            <div v-if="editFlag.entranceRequirements === false">
-                <p class="text-left" v-if="plan.entranceRequirements === ''">Здесь пусто!</p>
-            </div>
+        <div v-if="UnwrapFlag['entranceRequirements']">
+
             <div v-if="editFlag.entranceRequirements">
                 <ckeditor :editor="editor" v-model="planHTML.entranceRequirements" :config="allConfig.entranceRequirements" />
                 <p></p>
@@ -141,6 +138,7 @@
                 </div>
             </div>
             <div v-else>
+                <i id="edit" class="bi bi-pencil-square" @click="EditFieldPlan('entranceRequirements')"></i>
                 <div v-html=plan.entranceRequirements></div>
                 <p></p>
             </div>
@@ -175,10 +173,7 @@
             <i class="bi bi-caret-right-fill" v-else @click="Unwrap('contentDiscipline')"></i>
             <b>8. Содержание дисциплины (модуля), структурированное по темам <span class="badge bg-secondary">Редактируемое</span></b>
         </p>
-        <div v-if="UnwrapFlag['contentDiscipline']" @dblclick="EditFieldPlan('contentDiscipline')">
-            <div v-if="editFlag.contentDiscipline === false">
-                <p class="text-left" v-if="plan.contentDiscipline === ''">Здесь пусто!</p>
-            </div>
+        <div v-if="UnwrapFlag['contentDiscipline']">
             <div v-if="editFlag.contentDiscipline">
                 <ckeditor :editor="editor" v-model="planHTML.contentDiscipline" :config="allConfig.contentDiscipline" />
                 <p></p>
@@ -194,6 +189,7 @@
                 </div>
             </div>
             <div v-else>
+                <i id="edit" class="bi bi-pencil-square" @click="EditFieldPlan('contentDiscipline')"></i>
                 <div v-html=plan.contentDiscipline></div>
                 <p></p>
             </div>
@@ -206,10 +202,7 @@
             <i class="bi bi-caret-right-fill" v-else @click="Unwrap('currentControl')"></i>
             <b>9. Текущий контроль по дисциплине <span class="badge bg-secondary">Редактируемое</span></b>
         </p>
-        <div v-if="UnwrapFlag['currentControl']" @dblclick="EditFieldPlan('currentControl')">
-            <div v-if="editFlag.currentControl === false">
-                <p class="text-left" v-if="plan.currentControl === ''">Здесь пусто!</p>
-            </div>
+        <div v-if="UnwrapFlag['currentControl']">
             <div v-if="editFlag.currentControl">
                 <ckeditor :editor="editor" v-model="planHTML.currentControl" :config="allConfig.currentControl" />
                 <p></p>
@@ -221,6 +214,7 @@
                 </div>
             </div>
             <div v-else>
+                <i id="edit" class="bi bi-pencil-square" @click="EditFieldPlan('currentControl')"></i>
                 <div v-html=plan.currentControl></div>
                 <p></p>
             </div>
@@ -233,10 +227,7 @@
             <i class="bi bi-caret-right-fill" v-else @click="Unwrap('evaluationProcedure')"></i>
             <b>10. Порядок проведения и критерии оценивания промежуточной аттестации <span class="badge bg-secondary">Редактируемое</span></b>
         </p>
-        <div v-if="UnwrapFlag['evaluationProcedure']" @dblclick="EditFieldPlan('evaluationProcedure')">
-            <div v-if="editFlag.evaluationProcedure === false">
-                <p class="text-left" v-if="plan.evaluationProcedure === ''">Здесь пусто!</p>
-            </div>
+        <div v-if="UnwrapFlag['evaluationProcedure']">
             <div v-if="editFlag.evaluationProcedure">
                 <ckeditor :editor="editor" v-model="planHTML.evaluationProcedure" :config="allConfig.evaluationProcedure" />
                 <p></p>
@@ -291,6 +282,7 @@
                 </div>
             </div>
             <div v-else>
+                <i id="edit" class="bi bi-pencil-square" @click="EditFieldPlan('evaluationProcedure')"></i>
                 <div v-html=plan.evaluationProcedure></div>
                 <p></p>
             </div>
@@ -303,10 +295,7 @@
             <i class="bi bi-caret-right-fill" v-else @click="Unwrap('methodologicalSupport')"></i>
             <b>11. Учебно-методическое обеспечение <span class="badge bg-secondary">Редактируемое</span></b>
         </p>
-        <div v-if="UnwrapFlag['methodologicalSupport']" @dblclick="EditFieldPlan('methodologicalSupport')">
-            <div v-if="editFlag.methodologicalSupport === false">
-                <p class="text-left" v-if="plan.methodologicalSupport === ''">Здесь пусто!</p>
-            </div>
+        <div v-if="UnwrapFlag['methodologicalSupport']">
             <div v-if="editFlag.methodologicalSupport">
                 <ckeditor :editor="editor" v-model="planHTML.methodologicalSupport" :config="allConfig.methodologicalSupport" />
                 <p></p>
@@ -321,6 +310,7 @@
                 </div>
             </div>
             <div v-else>
+                <i id="edit" class="bi bi-pencil-square" @click="EditFieldPlan('methodologicalSupport')"></i>
                 <div v-html=plan.methodologicalSupport></div>
                 <p></p>
             </div>
@@ -333,10 +323,7 @@
             <i class="bi bi-caret-right-fill" v-else @click="Unwrap('references')"></i>
             <b>12. Перечень учебной литературы и ресурсов сети Интернет <span class="badge bg-secondary">Редактируемое</span></b>
         </p>
-        <div v-if="UnwrapFlag['references']" @dblclick="EditFieldPlan('references')">
-            <div v-if="editFlag.references === false">
-                <p class="text-left" v-if="plan.references === ''">Здесь пусто!</p>
-            </div>
+        <div v-if="UnwrapFlag['references']">
             <div v-if="editFlag.references">
                 <ckeditor :editor="editor" v-model="planHTML.references" :config="allConfig.references" />
                 <p></p>
@@ -363,6 +350,7 @@
                 </div>
             </div>
             <div v-else>
+                <i id="edit" class="bi bi-pencil-square" @click="EditFieldPlan('references')"></i>
                 <div v-html=plan.references></div>
                 <p></p>
             </div>
@@ -375,10 +363,7 @@
             <i class="bi bi-caret-right-fill" v-else @click="Unwrap('listInformationTechnologies')"></i>
             <b>13. Перечень информационных технологий <span class="badge bg-secondary">Редактируемое</span></b>
         </p>
-        <div v-if="UnwrapFlag['listInformationTechnologies']" @dblclick="EditFieldPlan('listInformationTechnologies')">
-            <div v-if="editFlag.listInformationTechnologies === false">
-                <p class="text-left" v-if="plan.listInformationTechnologies === ''">Здесь пусто!</p>
-            </div>
+        <div v-if="UnwrapFlag['listInformationTechnologies']">
             <div v-if="editFlag.listInformationTechnologies">
                 <ckeditor :editor="editor" v-model="planHTML.listInformationTechnologies" :config="allConfig.listInformationTechnologies" />
                 <p></p>
@@ -408,6 +393,7 @@
                 </div>
             </div>
             <div v-else>
+                <i id="edit" class="bi bi-pencil-square" @click="EditFieldPlan('listInformationTechnologies')"></i>
                 <div v-html=plan.listInformationTechnologies></div>
                 <p></p>
             </div>
@@ -421,10 +407,7 @@
             <i class="bi bi-caret-right-fill" v-else @click="Unwrap('materialSupport')"></i>
             <b>14. Материально-техническое обеспечение <span class="badge bg-secondary">Редактируемое</span></b>
         </p>
-        <div v-if="UnwrapFlag['materialSupport']" @dblclick="EditFieldPlan('materialSupport')">
-            <div v-if="editFlag.materialSupport === false">
-                <p class="text-left" v-if="plan.materialSupport === ''">Здесь пусто!</p>
-            </div>
+        <div v-if="UnwrapFlag['materialSupport']">
             <div v-if="editFlag.materialSupport">
                 <ckeditor :editor="editor" v-model="planHTML.materialSupport" :config="allConfig.materialSupport" />
                 <p></p>
@@ -441,6 +424,7 @@
                 </div>
             </div>
             <div v-else>
+                <i id="edit" class="bi bi-pencil-square" @click="EditFieldPlan('materialSupport')"></i>
                 <div v-html=plan.materialSupport></div>
                 <p></p>
             </div>
@@ -453,8 +437,7 @@
             <i class="bi bi-caret-right-fill" v-else @click="Unwrap('informationDevelopers')"></i>
             <b>15. Информация о разработчиках <span class="badge bg-secondary">Редактируемое</span></b>
         </p>
-        <div v-if="UnwrapFlag['informationDevelopers']" @dblclick="EditFieldPlan('informationDevelopers')">
-            <div v-if="editFlag.informationDevelopers === false"><p class="text-left" v-if="plan.informationDevelopers === ''">Здесь пусто!</p></div>
+        <div v-if="UnwrapFlag['informationDevelopers']">
             <div v-if="editFlag.informationDevelopers">
                     <ckeditor :editor="editor" v-model="planHTML.informationDevelopers" :config="allConfig.informationDevelopers" />
                 <p></p>
@@ -464,6 +447,7 @@
                 </div>
             </div>
             <div v-else>
+                <i id="edit" class="bi bi-pencil-square" @click="EditFieldPlan('informationDevelopers')"></i>
                     <div v-html=plan.informationDevelopers></div>
                 <p></p>
             </div>
@@ -471,7 +455,7 @@
     </div>
 
     <button type="button" class="btn btn-primary"  @click="$router.push(`/generate/${plan.guid}/pdf`)">Generate PDF</button>
-    <button type="button" class="btn btn-primary" @click="$router.push(`/generate/${plan.guid}/word`)">Generate WORD</button>
+    <!--<button type="button" class="btn btn-primary" @click="$router.push(`/generate/${plan.guid}/word`)">Generate WORD</button> -->
 </div>
 </template>
 
@@ -741,4 +725,5 @@ b{
         -ms-user-select: none;
         user-select: none;
 }
+
 </style>
