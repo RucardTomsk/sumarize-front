@@ -187,11 +187,11 @@ export default {
     methods: {
         async GetWorkProgram() {
             try {
-                const response = await axios.get("http://localhost:5050/plan/get-work-program/" + this.$route.params.guid);
+                const response = await axios.get("http://192.168.1.56:5050/plan/get-work-program/" + this.$route.params.guid);
                 this.plan = response.data;
                 this.plan['purposeMastering'] = this.plan['purposeMastering'].split('\n');
                 this.plan['resultsMastering'] = this.plan['resultsMastering'].split('\n');
-                const response_html = await axios.get("http://localhost:5050/plan/get-work-program/" + this.$route.params.guid + '_html');
+                const response_html = await axios.get("http://192.168.1.56:5050/plan/get-work-program/" + this.$route.params.guid + '_html');
                 this.planHTML = response_html.data;
             } catch(e){
                 alert(e);

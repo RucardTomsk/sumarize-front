@@ -11,7 +11,7 @@
                 <table class="table table-border table-hover">
                     <thead>
                         <tr>
-                            <th scope="col">Name</th>
+                            <th scope="col">Название</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -37,7 +37,7 @@ export default {
     },
     methods:{
         async GetMasFaculty(){
-            const response = await axios.get('http://localhost:5050/faculty/get-mas-faculty')
+            const response = await axios.get('http://192.168.1.56:5050/faculty/get-mas-faculty')
             this.facultys = response.data;
         }
     },

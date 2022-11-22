@@ -1,6 +1,14 @@
 <template>
     <div id="element-to-print">
     <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><span @click="$router.push('/')">Факультеты</span></li>
+                <li class="breadcrumb-item"><span @click="$router.push(`/program/${param[3]}`)">{{param[0]}}</span></li>
+                <li class="breadcrumb-item"><span @click="$router.back()">{{param[1]}}</span></li>
+                <li class="breadcrumb-item active" aria-current="page">{{param[2]}}</li>
+            </ol>
+        </nav>
         <p class="text-left">
             <i class="bi bi-caret-down-fill" v-if="UnwrapFlag.title"
                 @click="RollUp('title')"></i>
@@ -452,9 +460,10 @@
                 <p></p>
             </div>
         </div>
+        <button type="button" class="btn btn-outline-secondary" @click="$router.push(`/generate/${plan.guid}/pdf`)">Конвертировать в PDF</button>
     </div>
 
-    <button type="button" class="btn btn-primary"  @click="$router.push(`/generate/${plan.guid}/pdf`)">Generate PDF</button>
+    
     <!--<button type="button" class="btn btn-primary" @click="$router.push(`/generate/${plan.guid}/word`)">Generate WORD</button> -->
 </div>
 </template>
@@ -596,12 +605,13 @@ export default {
             UnwrapFlag:{},
             editor: ClassicEditor,
             allConfig:{},
+            param:[],
         }
     },
     methods: {
         async GetWorkProgram() {
             try {
-                const response = await axios.get("http://localhost:5050/plan/get-work-program/" + this.$route.params.guid);
+                const response = await axios.get("http://192.168.1.56:5050/plan/get-work-program/" + this.$route.params.guid);
                 this.plan = response.data;
                 for(var key in this.plan){
                     this.editFlag[key] = false;
@@ -656,8 +666,10 @@ export default {
                     }
                 }
                 this.UnwrapFlag['title'] = false;
-                const response_html = await axios.get("http://localhost:5050/plan/get-work-program/" + this.$route.params.guid+'_html');
+                const response_html = await axios.get("http://192.168.1.56:5050/plan/get-work-program/" + this.$route.params.guid+'_html');
                 this.planHTML = response_html.data;
+                const response_param = await axios.get("http://192.168.1.56:5050/plan/get-name/" + this.$route.params.guid);
+                this.param = response_param.data;
             } catch (e) {
                 alert(e)
             }
@@ -674,10 +686,10 @@ export default {
                 text = text.replaceAll('</figure>', '')
                 text = text.replaceAll('<table>', '<table class="table table-bordered">')
             }
-            axios.post("http://localhost:5050/plan/save-plan/" + guid + "_html/" + key, {
+            axios.post("http://192.168.1.56:5050/plan/save-plan/" + guid + "_html/" + key, {
                 "Text": HTMLtext
             });
-            axios.post("http://localhost:5050/plan/save-plan/" + guid +"/"+key,{
+            axios.post("http://192.168.1.56:5050/plan/save-plan/" + guid +"/"+key,{
                 "Text":text
             }).then(()=>{
                 
