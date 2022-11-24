@@ -725,17 +725,16 @@ export default {
 </script>
 
 <style>
-p{
-        font-family: 'Times New Roman';
-        font-size: 12;
-        white-space: pre-wrap;
+p {
+    font-family: 'Times New Roman';
+    font-size: 12;
+    white-space: pre-wrap;
 }
 
-b{
+b {
     -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
-
 </style>

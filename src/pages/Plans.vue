@@ -7,10 +7,11 @@
             <li class="breadcrumb-item active" aria-current="page">{{param[0]}}</li>
         </ol>
     </nav>
+    
     <div class="row">
         <div class="col"></div>
         <div class="col-9">
-            <table class="table table-border table-hover">
+            <table class="table table-border table-hover ">
                 <thead>
                     <tr>
                         <th scope="col">Код</th>
@@ -22,7 +23,7 @@
                 <tbody>
                     <template v-for:="sem in key_plans">
                         <tr>
-                            <th colspan="4" style="text-align: center" @click="Wrap(sem)">
+                            <th colspan="5" style="text-align: center" @click="Wrap(sem)">
                                 <i class="bi bi-caret-down-fill" v-if="UnwrapFlag[sem]"></i>
                                 <i class="bi bi-caret-right-fill" v-else></i> 
                                 {{sem}}
@@ -31,16 +32,42 @@
                         <tr v-for:="plan in plans[sem]" v-show="UnwrapFlag[sem]">
                             <th scope="row table-active">{{ plan.code }}</th>
                             <td>{{ plan.name }}</td>
-                            <td><button type="button" class="btn btn-outline-secondary btn-sm" @click="$router.push(`/plans/work-program/${plan.guid}`)">Программа</button></td>
-                            <td><button type="button" class="btn btn-outline-secondary btn-sm">Аннотация</button></td>
+                            <td><button type="button" class="btn btn-outline-secondary btn-sm " @click="$router.push(`/plans/work-program/${plan.guid}`)">Программа</button></td>
+                            <td><button type="button" class="btn btn-outline-secondary btn-sm ">Аннотация</button></td>
                         </tr>
+                        
                     </template>
                 </tbody>
             </table>
         </div>
-        <div class="col"></div>
+        <div class="col"><button v-if="admin || access" type="button" class=" btn btn-outline-secondary" @click="staticBackdrop = true">Пользователи</button></div>
 
     </div>
+    <MDBModal id="staticBackdrop" tabindex="-1" labelledby="staticBackdropLabel" v-model="staticBackdrop" staticBackdrop>
+        <MDBModalHeader>
+            <MDBModalTitle id="staticBackdropLabel"> Список предметов </MDBModalTitle>
+        </MDBModalHeader>
+        <MDBModalBody>
+            <div class="mb-3">
+                <label for="formSearh" class="form-label">Поиск</label>
+                <input type="text" class="form-control" id="formSearh" v-model="searchP">
+            </div>
+               
+            <table class="table table-border table-hover ">
+                <tbody>
+                    <template v-for:="sem in key_plans">
+                        <template v-for:="plan in plans[sem]">
+                        <tr v-if="plan.code.toLowerCase().includes(searchP.toLowerCase()) || plan.name.toLowerCase().includes(searchP.toLowerCase()) || searchP ===''">
+                            <th scope="row table-active">{{ plan.code }}</th>
+                            <td>{{ plan.name }}</td>
+                        </tr>
+                        </template>
+                    </template>
+                </tbody>
+            </table>
+    
+        </MDBModalBody>
+    </MDBModal>
 </div>
     
 </template>
@@ -48,13 +75,38 @@
 
 <script>
 import axios from "axios";
+import {
+    MDBModal,
+    MDBModalHeader,
+    MDBModalTitle,
+    MDBModalBody,
+    MDBModalFooter,
+} from 'mdb-vue-ui-kit';
+import { ref } from 'vue';
 export default {
+    components: {
+        MDBModal,
+        MDBModalHeader,
+        MDBModalTitle,
+        MDBModalBody,
+        MDBModalFooter,
+    },
+    setup() {
+        const staticBackdrop = ref(false);
+        return {
+            staticBackdrop
+        };
+    },
     data() {
         return {
             plans: [],
             param: [],
             key_plans: [],
             UnwrapFlag: {},
+            admin: false,
+            access: false,
+            searchP: "",
+
         }
     },
     methods: {
@@ -81,11 +133,39 @@ export default {
             }else{
                 this.UnwrapFlag[key] = true;
             }
-        }
+        },
+        async ChekAdmin() {
+            await axios.post('http://192.168.1.56:5050/role/check-admin', {}, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.token}`
+                }
+            })
+                .then((response) => {
+                    this.admin = true;
+                }).catch((error) => {
+                    console.log(error.toJSON())
+                })
+        },
+        async ChekAccess() {
+            await axios.post('http://192.168.1.56:5050/role/check-access', {
+                'GuidNode': this.$route.params.guid
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.token}`
+                }
+            })
+                .then((response) => {
+                    this.access = true;
+                }).catch((error) => {
+                    console.log(error.toJSON())
+                })
+        },
 
     },
     beforeMount() {
         this.GetMasPosts();
+        this.ChekAdmin();
+        this.ChekAccess();
     },
 
 }

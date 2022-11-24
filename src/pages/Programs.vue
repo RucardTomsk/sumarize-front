@@ -45,14 +45,19 @@
                 </MDBModalHeader>
                 <MDBModalBody>
                     <div class="mb-3">
-                        <label for="formGroupExampleInput2" class="form-label">Поиск</label>
-                        <input type="text" class="form-control" id="formGroupExampleInput2"
+                        <label for="formSearh" class="form-label">Поиск</label>
+                        <input type="text" class="form-control" id="formSearh"
                             v-model="search">
                     </div>
 
-                    <div v-for:="_user in mas_user">
-                        <p>_user.FIO</p>
-                    </div>
+                    <template v-for:="_user in mas_user">
+                        <div class="form-check" v-if="_user.fio.toLowerCase().includes(search.toLowerCase()) || search === ''">
+                            <input v-model="mas_check_user[_user.guid]" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                {{_user.fio}}
+                            </label>
+                        </div>
+                    </template>
 
                 </MDBModalBody>
                 <MDBModalFooter>
@@ -131,7 +136,8 @@ export default {
             admin: false,
             access: false,
             search: "",
-            mas_user: {},
+            mas_user: [],
+            mas_check_user: {},
         }
     },
     methods: {
@@ -199,7 +205,7 @@ export default {
         },
         async ChekAccess() {
             await axios.post('http://192.168.1.56:5050/role/check-access',{
-                'guid_node': this.$route.params.guid
+                'GuidNode': this.$route.params.guid
             },{
                 headers: {
                     'Authorization': `Bearer ${localStorage.token}`
@@ -213,16 +219,36 @@ export default {
         },
         async IssueAccess(){
             this.staticBackdrop = false;
-
+            console.log(this.mas_check_user)
+            for(var user in this.mas_user){
+                console.log(user)
+                if (this.mas_check_user[this.mas_user[user].guid] === true){
+                    await axios.post('http://192.168.1.56:5050/role/issue-access',{
+                        "guidUser": this.mas_user[user].guid,
+                        "guidNode": this.$route.params.guid
+                    },{
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.token}`
+                        }
+                    }).then(()=>{
+                        console.log("OK");
+                    }).catch(error=>{
+                        console.log(error.toJSON());
+                    });
+                }
+            }
+            alert("Права выданы!");
         },
         GetMasUser(){
-            axios.post("http://192.168.1.56:5050/auth/get-user-not-access",{
-                'guid_node': this.$route.params.guid},{
+            axios.post("http://192.168.1.56:5050/auth/get-user-not-access/" + this.$route.params.guid,{},{
                 headers: {
                     'Authorization': `Bearer ${localStorage.token}`
                 }
             }).then((response)=>{
                 this.mas_user = response.data;
+                for(var user in this.mas_user){
+                    this.mas_check_user[user.guid] = false;
+                }
             }).catch((error)=>{
                 console.log(error.toJSON())
             })

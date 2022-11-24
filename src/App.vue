@@ -10,9 +10,6 @@
           <div>
             <ul class="nav" v-if="token === undefined">
               <li class="nav-item">
-                <button type="button" class="btn btn-outline-dark m-1" @click="staticBackdropRegister = true">Регистрация</button>
-              </li>
-              <li class="nav-item">
                 <button type="button" class="btn btn-outline-dark m-1" @click="staticBackdropLogin = true">Войти</button>
               </li>
             </ul>
@@ -79,11 +76,12 @@
         </div>
       </MDBModalBody>
       <MDBModalFooter>
-        <button type="button" class="btn btn-outline-primary" @click="login"> Войти </button>
+            <span style="margin-right:auto">Ещё нету аккаунта? <span class="change-text" @click="openRegister">Зарегистрироваться</span></span>
+            <button type="button" class="btn btn-outline-primary" @click="login" > Войти </button>
       </MDBModalFooter>
     </MDBModal>
 
-    <main>
+    <main :key="keyRender">
       <router-view></router-view>
     </main>
 
@@ -107,8 +105,9 @@ import {
   MDBModalFooter,
 } from 'mdb-vue-ui-kit';
 
-import { ref } from 'vue';
+import {ref} from 'vue';
 import axios from "axios";
+import Vue from 'vue';
 
 export default {
   components: {
@@ -134,6 +133,7 @@ export default {
       UserFIO: "",
       token: undefined,
       dictError: {flagError1: false,flagError2: false},
+      keyRender: 0,
     }
   },
   methods:{
@@ -152,19 +152,44 @@ export default {
         }
       })
     },
+    openRegister(){
+      this.staticBackdropLogin = false;
+      this.staticBackdropRegister = true;
+    },
     login(){
       axios.post('http://192.168.1.56:5050/auth-start/login',{
         "Email": this.Email,
         "Password": this.Password
       }).then((response)=>{
         localStorage.token = response.data.token
+        localStorage.refreshToken = response.data.refreshToken
         this.token = response.data.token
         this.staticBackdropLogin = false;
-        window.location.reload();
+        this.getFIO();
+        this.$forceUpdate();
+        this.keyRender += 1;
       }).catch((error)=>{
         if (error.toJSON().status === 500) {
           this.dictError.flagError2 = true;
         }
+      })
+    },
+    checkToken(){
+      axios.post('http://192.168.1.56:5050/auth-start/check-datatime-token',{
+        'refreshToken': localStorage.refreshToken
+      },{
+        headers: {
+          'Authorization': `Bearer ${localStorage.token}`
+        }
+      }).then(response=>{
+        var res = response.data
+        if (res.length ===2){
+          localStorage.token = response.data.token
+          localStorage.refreshToken = response.data.refreshToken
+          this.token = response.data.token
+        }
+      }).catch((error) => {
+        console.log(error.toJSON())
       })
     },
     closeError(key){
@@ -177,12 +202,15 @@ export default {
         }
       }).then((response)=>{
           this.UserFIO = response.data
+      }).catch(()=>{
+        this.exit()
       })
     },
     exit(){
       localStorage.removeItem("token");
       this.token = undefined;
-      window.location.reload();
+      this.$forceUpdate();
+      this.keyRender +=1;
     }
   },
   beforeMount(){
@@ -211,6 +239,24 @@ footer {
   width: 100%;
   /* Set the fixed height of the footer here */
   height: 60px;
+}
+
+span.change-text {
+  color: red;
+  /* Цвет текста */
+  font-size: 1em;
+  /* Размер текста */
+  font-weight: bold;
+  padding: 20px 0px;
+  text-transform: uppercase;
+  line-height: 1;
+  -webkit-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+}
+
+span.change-text:hover {
+  color: blue;
+  /* Меняем цвет текста */
 }
 </style>
 
