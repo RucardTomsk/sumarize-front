@@ -33,7 +33,7 @@
                             <th scope="row table-active">{{ plan.code }}</th>
                             <td>{{ plan.name }}</td>
                             <td><button type="button" class="btn btn-outline-secondary btn-sm " @click="$router.push(`/plans/work-program/${plan.guid}`)">Программа</button></td>
-                            <td><button type="button" class="btn btn-outline-secondary btn-sm ">Аннотация</button></td>
+                            <td><button type="button" class="btn btn-outline-secondary btn-sm " @click="$router.push(`/plans/annotation/${plan.guid}`)">Аннотация</button></td>
                         </tr>
                         
                     </template>
@@ -57,7 +57,7 @@
                 <tbody>
                     <template v-for:="sem in key_plans">
                         <template v-for:="plan in plans[sem]">
-                        <tr v-if="plan.code.toLowerCase().includes(searchP.toLowerCase()) || plan.name.toLowerCase().includes(searchP.toLowerCase()) || searchP ===''">
+                        <tr v-if="plan.code.toLowerCase().includes(searchP.toLowerCase()) || plan.name.toLowerCase().includes(searchP.toLowerCase()) || searchP ===''" @click="OpenUserWindow(plan.guid)">
                             <th scope="row table-active">{{ plan.code }}</th>
                             <td>{{ plan.name }}</td>
                         </tr>
@@ -67,6 +67,56 @@
             </table>
     
         </MDBModalBody>
+    </MDBModal>
+
+    <MDBModal id="staticBackdropUser" tabindex="-1" labelledby="staticBackdropLabelUser" v-model="staticBackdropUser" staticBackdropUser>
+        <MDBModalHeader>
+            <MDBModalTitle id="staticBackdropLabelUser"> Список пользователей </MDBModalTitle>
+            <button type="button" class="btn btn-outline-secondary" style="margin-left:auto" @click="staticBackdropUser = false, staticBackdropInvite=true"> Пригласить </button>
+        </MDBModalHeader>
+        <MDBModalBody>
+            <div class="mb-3">
+                <label for="formSearh" class="form-label">Поиск</label>
+                <input type="text" class="form-control" id="formSearh" v-model="searchU">
+            </div>
+        
+            <template v-for:="_user in mas_user">
+                <div class="form-check" v-if="_user.fio.toLowerCase().includes(searchU.toLowerCase()) || searchU === ''">
+                    <input v-model="mas_check_user[_user.guid]" class="form-check-input" type="checkbox" value=""
+                        id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        {{_user.fio}}
+                    </label>
+                </div>
+            </template>
+        
+        </MDBModalBody>
+        <MDBModalFooter>
+            <button style="margin-right:auto" type="button" class="btn btn-outline-secondary" @click="staticBackdrop = true, staticBackdropUser=false"> Назад </button>
+            <button type="button" class="btn btn-outline-primary" @click="IssueAccess(plan_guid)"> Выдать права </button>
+        </MDBModalFooter>
+    </MDBModal>
+
+    <MDBModal id="staticBackdropInvite" tabindex="-1" labelledby="staticBackdropLabelInvite" v-model="staticBackdropInvite"
+        staticBackdropInvite>
+        <MDBModalHeader>
+            <MDBModalTitle id="staticBackdropLabelInvite"> Приглашение </MDBModalTitle>
+           
+        </MDBModalHeader>
+        <MDBModalBody>
+            <div class="mb-3 row">
+                <label for="inputEmail4" class="form-label">Email</label>
+                <input type="email" class="form-control" id="inputEmail4" v-model="emailInvite">
+            </div>
+        </MDBModalBody>
+        <MDBModalFooter>
+            <div style="margin-right:auto">
+                <button type="button" class="btn btn-outline-secondary"
+                    @click="staticBackdropUser = true, staticBackdropInvite=false"> Назад </button>
+                <button type="button" class="m-2 btn btn-outline-danger" @click="staticBackdropInvite=false"> Закрыть </button>
+            </div>
+            <button type="button" class="btn btn-outline-success" @click="createInvite(plan_guid,emailInvite)"> Отправить </button>
+        </MDBModalFooter>
     </MDBModal>
 </div>
     
@@ -93,8 +143,12 @@ export default {
     },
     setup() {
         const staticBackdrop = ref(false);
+        const staticBackdropUser = ref(false);
+        const staticBackdropInvite = ref(false);
         return {
-            staticBackdrop
+            staticBackdrop,
+            staticBackdropUser,
+            staticBackdropInvite
         };
     },
     data() {
@@ -106,7 +160,12 @@ export default {
             admin: false,
             access: false,
             searchP: "",
-
+            mas_user: [],
+            mas_check_user: {},
+            searchU:"",
+            plan_guid: "",
+            invaitLink: "",
+            emailInvite: "",
         }
     },
     methods: {
@@ -148,7 +207,7 @@ export default {
         },
         async ChekAccess() {
             await axios.post('http://192.168.1.56:5050/role/check-access', {
-                'GuidNode': this.$route.params.guid
+                'GuidNode': this.params[2]
             }, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.token}`
@@ -160,7 +219,63 @@ export default {
                     console.log(error.toJSON())
                 })
         },
-
+        async IssueAccess(guid_node) {
+            this.staticBackdropUser = false;
+            console.log(this.mas_check_user)
+            for (var user in this.mas_user) {
+                console.log(user)
+                if (this.mas_check_user[this.mas_user[user].guid] === true) {
+                    await axios.post('http://192.168.1.56:5050/role/issue-access', {
+                        "guidUser": this.mas_user[user].guid,
+                        "guidNode": guid_node
+                    }, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.token}`
+                        }
+                    }).then(() => {
+                        console.log("OK");
+                    }).catch(error => {
+                        console.log(error.toJSON());
+                    });
+                }
+            }
+            alert("Права выданы!");
+        },
+        GetMasUser(guid_node) {
+            axios.post("http://192.168.1.56:5050/auth/get-user-not-access/" + guid_node, {}, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.token}`
+                }
+            }).then((response) => {
+                this.mas_user = response.data;
+                for (var user in this.mas_user) {
+                    this.mas_check_user[user.guid] = false;
+                }
+            }).catch((error) => {
+                console.log(error.toJSON())
+            })
+        },
+        OpenUserWindow(guid_node){
+            this.staticBackdrop = false;
+            this.GetMasUser(guid_node);
+            this.plan_guid = guid_node;
+            this.staticBackdropUser = true;
+        },
+        createInvite(guid_plan,email){
+            this.invaitLink = "http://localhost:8080/#/invite/";
+            axios.post("http://192.168.1.56:5050/role/createInvite",{
+                "GuidNode": guid_plan,
+                "Email": email
+            },{
+                headers: {
+                    'Authorization': `Bearer ${localStorage.token}`
+                } 
+            }).then(response=>{
+                alert("Приглашение отпарвлено!")
+            }).catch(error=>{
+                console.log(error.toJSON())
+            })
+        }
     },
     beforeMount() {
         this.GetMasPosts();

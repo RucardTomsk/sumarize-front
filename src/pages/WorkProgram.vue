@@ -6,7 +6,7 @@
                 <li class="breadcrumb-item"><span @click="$router.push('/')">Факультеты</span></li>
                 <li class="breadcrumb-item"><span @click="$router.push(`/program/${param[3]}`)">{{param[0]}}</span></li>
                 <li class="breadcrumb-item"><span @click="$router.back()">{{param[1]}}</span></li>
-                <li class="breadcrumb-item active" aria-current="page">{{param[2]}}</li>
+                <li class="breadcrumb-item active" aria-current="page">{{param[2]}} (Программа)</li>
             </ol>
         </nav>
         <p class="text-left">

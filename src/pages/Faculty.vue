@@ -33,6 +33,7 @@ export default {
     data(){
         return{
             facultys:[],
+            prevRoute: null,
         }
     },
     methods:{
