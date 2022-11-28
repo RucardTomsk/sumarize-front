@@ -168,7 +168,8 @@ export default {
                         'Authorization': `Bearer ${localStorage.token}`
                     } 
                 }).then(()=>{
-                    this.$router.push(`/`);
+                    localStorage.flag = 'newLogin';
+                    this.$router.push({ path: '/', query: { flag: '+' } });
                 }).catch(error=>{
                     console.log(error.toJSON())
                 })

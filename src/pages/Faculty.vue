@@ -43,6 +43,12 @@ export default {
         }
     },
     beforeMount(){
+        if (this.$route.query.flag === '+'){
+            if (localStorage.flag==='newLogin'){
+                localStorage.flag = 'login';
+                location.reload()
+            }
+        }
         this.GetMasFaculty();
     }
 }

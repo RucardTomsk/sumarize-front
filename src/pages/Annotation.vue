@@ -1,5 +1,5 @@
 <template>
-    <div id="element-to-print">
+    <div id="element-to-print" v-if="access || admin">
         
         <div class="conteiner">
             <div class="row">
@@ -93,6 +93,88 @@
             </div>
         </div>
 
+        <!--<button type="button" class="btn btn-primary" @click="$router.push(`/generate/${plan.guid}/word`)">Generate WORD</button> -->
+    </div>
+    <div id="element-to-print" v-else>
+    
+        <div class="conteiner">
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-8">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><span @click="$router.push('/')">Факультеты</span></li>
+                            <li class="breadcrumb-item"><span
+                                    @click="$router.push(`/program/${param[3]}`)">{{param[0]}}</span></li>
+                            <li class="breadcrumb-item"><span @click="$router.back()">{{param[1]}}</span></li>
+                            <li class="breadcrumb-item active" aria-current="page">{{param[2]}} (Аннотация)</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-8">
+                    <p class="text-left"><b>{{ plan.code }} {{ plan.name }}</b> </p>
+                </div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-8">
+                    <p class="text-left">{{ plan.placeDiscipline }} </p>
+                </div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-8">
+                    <p class="text-left">{{ plan.semesterMastering }} </p>
+                </div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-8">
+                    <p class="text-left">Язык реализации - {{ plan.implementationLanguage }} </p>
+                </div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-8">
+                    <p class="text-left">{{ plan.scopeDiscipline }} </p>
+                </div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-8">
+                    <p class="text-left">
+    
+                        <b>Тематический план </b>
+                    </p>
+                    <div>
+                       
+                        
+                            <div v-html=plan.contentDiscipline></div>
+                            <p></p>
+                   
+                    </div>
+                </div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-8">
+                    <button type="button" class="btn btn-outline-secondary"
+                        @click="$router.push(`/generateAnnot/${plan.guid}/pdf`)">Конвертировать в PDF</button>
+                </div>
+                <div class="col"></div>
+            </div>
+        </div>
+    
         <!--<button type="button" class="btn btn-primary" @click="$router.push(`/generate/${plan.guid}/word`)">Generate WORD</button> -->
     </div>
 </template>
@@ -235,6 +317,8 @@ export default {
             editor: ClassicEditor,
             allConfig: {},
             param: [],
+            access: false,
+            admin: false,
         }
     },
     methods: {
@@ -343,9 +427,37 @@ export default {
         CloseExamle(key) {
             this.exampleFlag[key] = false;
         },
+        async ChekAdmin() {
+            await axios.post('http://192.168.1.56:5050/role/check-admin', {}, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.token}`
+                }
+            })
+                .then((response) => {
+                    this.admin = true;
+                }).catch((error) => {
+                    console.log(error.toJSON())
+                })
+        },
+        async ChekAccess() {
+            await axios.post('http://192.168.1.56:5050/role/check-access', {
+                'GuidNode': this.$route.params.guid
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.token}`
+                }
+            })
+                .then(() => {
+                    this.access = true;
+                }).catch((error) => {
+                    console.log(error.toJSON())
+                })
+        },
     },
     beforeMount() {
         this.GetWorkProgram();
+        this.ChekAdmin();
+        this.ChekAccess();
         window.SaveF = (key, HTMLtext) => this.SaveFieldPlan(key, HTMLtext)
         window.OpenE = (key) => this.OpenExamle(key)
         window.CloseE = (key) => this.CloseExamle(key)

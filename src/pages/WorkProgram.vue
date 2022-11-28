@@ -1,5 +1,5 @@
 <template>
-    <div id="element-to-print">
+    <div id="element-to-print" v-if="access || admin">
     <div class="container">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -466,6 +466,291 @@
     
     <!--<button type="button" class="btn btn-primary" @click="$router.push(`/generate/${plan.guid}/word`)">Generate WORD</button> -->
 </div>
+<div id="element-to-print" v-else>
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><span @click="$router.push('/')">Факультеты</span></li>
+                <li class="breadcrumb-item"><span @click="$router.push(`/program/${param[3]}`)">{{param[0]}}</span>
+                </li>
+                <li class="breadcrumb-item"><span @click="$router.back()">{{param[1]}}</span></li>
+                <li class="breadcrumb-item active" aria-current="page">{{param[2]}} (Программа)</li>
+            </ol>
+        </nav>
+        <p class="text-left">
+            <i class="bi bi-caret-down-fill" v-if="UnwrapFlag.title" @click="RollUp('title')"></i>
+            <i class="bi bi-caret-right-fill" v-else @click="Unwrap('title')"></i>
+            <b>Титульный лист</b>
+        </p>
+        <div v-if="UnwrapFlag['title']">
+            <p class="text-center">Министерство науки и высшего образования Российской Федерации</p>
+            <p class="text-center" style="margin-top: -20px">НАЦИОНАЛЬНЫЙ ИССЛЕДОВАТЕЛЬСКИЙ</p>
+            <p class="text-center" style="margin-top: -20px">ТОМСКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ (НИ ТГУ)</p>
+            <p class="text-center">{{ plan.nameFaculty }}</p>
+
+            <div class="row">
+                <div class="col-8"></div>
+                <div class="col-3" style="border: 1px solid black">
+                    <p class="text-left">УТВЕРЖДАЮ:</p>
+                    <p class="text-left" style="margin-top: -20px">Исполнительный директор</p>
+                    <p class="text-left" style="margin-top: -15px">________________Т.С.Кетова</p>
+                    <p class="text-left" style="margin-top: -10px">« ___ » _______________ {{ plan.year }} г.</p>
+                </div>
+                <div class="col"></div>
+            </div>
+
+            <p class="text-center">Рабочая программа дисциплины</p>
+            <p class="text-center" style="margin-top: -10px"><b>{{ plan.name }}</b></p>
+
+            <p class="text-center">по направлению подготовки</p>
+            <p class="text-center" style="margin-top: -10px"><b>«{{ plan.directionTraining }}»</b></p>
+
+            <p class="text-center">Направленность (профиль) подготовки / специализация:</p>
+            <p class="text-center" style="margin-top: -10px"><b>{{ plan.trainingProfile }}</b></p>
+
+            <p class="text-center">Форма обучения</p>
+            <p class="text-center" style="margin-top: -10px"><b>{{ plan.formTraining }}</b></p>
+
+            <p class="text-center">Квалификация</p>
+            <p class="text-center" style="margin-top: -10px"><b>{{ plan.qualification }}</b></p>
+
+            <p class="text-center">Год приема</p>
+            <p class="text-center" style="margin-top: -10px"><b>{{ plan.year }}</b></p>
+
+            <p class="text-center">Код дисциплины в учебном плане: <b>{{ plan.code }}</b></p>
+
+            <div class="row">
+                <div class="col-8"></div>
+                <div class="col-3">
+                    <p class="text-left">СОГЛАСОВАНО:</p>
+                    <p class="text-left" style="margin-top: -20px">Руководитель ОП</p>
+                    <p class="text-left" style="margin-top: -15px">____________ О.А.Змеев</p>
+                    <p class="text-left" style="margin-top: -20px">Председатель УМК</p>
+                    <p class="text-left" style="margin-top: -15px">____________И.О. Фамилия</p>
+                </div>
+                <div class="col"></div>
+            </div>
+
+            <p class="text-center">Томск – {{ plan.year }}</p>
+        </div>
+    </div>
+    <div class="container">
+        <p class="text-left">
+            <i class="bi bi-caret-down-fill" v-if="UnwrapFlag.purposeMastering" @click="RollUp('purposeMastering')"></i>
+            <i class="bi bi-caret-right-fill" v-else @click="Unwrap('purposeMastering')"></i>
+            <b>1. Цель и планируемые результаты освоения дисциплины (модуля)</b>
+        </p>
+        <div v-if="UnwrapFlag['purposeMastering']">
+            <p class="text-left" style="margin-top: -20px">Целью освоения дисциплины является формирование следующих
+                компетенций:</p>
+            <p class="text-left" style="margin-top: -10px">{{ plan.purposeMastering }}</p>
+            <p class="text-left">Результатами освоения дисциплины являются следующие индикаторы достижения
+                компетенций:</p>
+            <p class="text-left" style="margin-top: -10px">{{ plan.resultsMastering }}</p>
+        </div>
+    </div>
+    <div class="container">
+        <p class="text-left">
+            <i class="bi bi-caret-down-fill" v-if="UnwrapFlag.developmentMastering"
+                @click="RollUp('developmentMastering')"></i>
+            <i class="bi bi-caret-right-fill" v-else @click="Unwrap('developmentMastering')"></i>
+            <b>2. Задачи освоения дисциплины</b>
+        </p>
+        <div v-if="UnwrapFlag['developmentMastering']">
+
+
+            <div v-html=plan.developmentMastering></div>
+            <p></p>
+
+
+        </div>
+    </div>
+
+    <div class="container">
+        <p class="text-left">
+            <i class="bi bi-caret-down-fill" v-if="UnwrapFlag.placeDiscipline" @click="RollUp('placeDiscipline')"></i>
+            <i class="bi bi-caret-right-fill" v-else @click="Unwrap('placeDiscipline')"></i>
+            <b>3. Место дисциплины (модуля) в структуре образовательной программы</b>
+        </p>
+        <div v-if="UnwrapFlag['placeDiscipline']">
+            <p class="text-left" style="margin-top: -20px">{{ plan.placeDiscipline }}</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <p class="text-left">
+            <i class="bi bi-caret-down-fill" v-if="UnwrapFlag.semesterMastering"
+                @click="RollUp('semesterMastering')"></i>
+            <i class="bi bi-caret-right-fill" v-else @click="Unwrap('semesterMastering')"></i>
+            <b>4. Семестр(ы) освоения и форма(ы) промежуточной аттестации по дисциплине</b>
+        </p>
+        <div v-if="UnwrapFlag['semesterMastering']">
+            <p class="text-left" style="margin-top: -20px">{{ plan.semesterMastering }}</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <p class="text-left">
+            <i class="bi bi-caret-down-fill" v-if="UnwrapFlag.entranceRequirements"
+                @click="RollUp('entranceRequirements')"></i>
+            <i class="bi bi-caret-right-fill" v-else @click="Unwrap('entranceRequirements')"></i>
+            <b>5. Входные требования для освоения дисциплины</b>
+        </p>
+        <div v-if="UnwrapFlag['entranceRequirements']">
+
+
+
+            <div v-html=plan.entranceRequirements></div>
+            <p></p>
+
+        </div>
+    </div>
+
+    <div class="container">
+        <p class="text-left">
+            <i class="bi bi-caret-down-fill" v-if="UnwrapFlag.implementationLanguage"
+                @click="RollUp('implementationLanguage')"></i>
+            <i class="bi bi-caret-right-fill" v-else @click="Unwrap('implementationLanguage')"></i>
+            <b>6. Язык реализации</b>
+        </p>
+        <div v-if="UnwrapFlag['implementationLanguage']">
+            <p class="text-left" style="margin-top: -20px">{{ plan.implementationLanguage }}</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <p class="text-left">
+            <i class="bi bi-caret-down-fill" v-if="UnwrapFlag.scopeDiscipline" @click="RollUp('scopeDiscipline')"></i>
+            <i class="bi bi-caret-right-fill" v-else @click="Unwrap('scopeDiscipline')"></i>
+            <b>7. Объем дисциплины (модуля)</b>
+        </p>
+        <div v-if="UnwrapFlag['scopeDiscipline']">
+            <p class="text-left" style="margin-top: -20px">{{ plan.scopeDiscipline }}</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <p class="text-left">
+            <i class="bi bi-caret-down-fill" v-if="UnwrapFlag.contentDiscipline"
+                @click="RollUp('contentDiscipline')"></i>
+            <i class="bi bi-caret-right-fill" v-else @click="Unwrap('contentDiscipline')"></i>
+            <b>8. Содержание дисциплины (модуля), структурированное по темам</b>
+        </p>
+        <div v-if="UnwrapFlag['contentDiscipline']">
+
+
+            <div v-html=plan.contentDiscipline></div>
+            <p></p>
+
+        </div>
+    </div>
+
+    <div class="container">
+        <p class="text-left">
+            <i class="bi bi-caret-down-fill" v-if="UnwrapFlag.currentControl" @click="RollUp('currentControl')"></i>
+            <i class="bi bi-caret-right-fill" v-else @click="Unwrap('currentControl')"></i>
+            <b>9. Текущий контроль по дисциплине </b>
+        </p>
+        <div v-if="UnwrapFlag['currentControl']">
+
+
+            <div v-html=plan.currentControl></div>
+            <p></p>
+
+        </div>
+    </div>
+
+    <div class="container">
+        <p class="text-left">
+            <i class="bi bi-caret-down-fill" v-if="UnwrapFlag.evaluationProcedure"
+                @click="RollUp('evaluationProcedure')"></i>
+            <i class="bi bi-caret-right-fill" v-else @click="Unwrap('evaluationProcedure')"></i>
+            <b>10. Порядок проведения и критерии оценивания промежуточной аттестации</b>
+        </p>
+        <div v-if="UnwrapFlag['evaluationProcedure']">
+
+
+            <div v-html=plan.evaluationProcedure></div>
+            <p></p>
+
+        </div>
+    </div>
+
+    <div class="container">
+        <p class="text-left">
+            <i class="bi bi-caret-down-fill" v-if="UnwrapFlag.methodologicalSupport"
+                @click="RollUp('methodologicalSupport')"></i>
+            <i class="bi bi-caret-right-fill" v-else @click="Unwrap('methodologicalSupport')"></i>
+            <b>11. Учебно-методическое обеспечение </b>
+        </p>
+        <div v-if="UnwrapFlag['methodologicalSupport']">
+
+
+            <div v-html=plan.methodologicalSupport></div>
+            <p></p>
+
+        </div>
+    </div>
+
+    <div class="container">
+        <p class="text-left">
+            <i class="bi bi-caret-down-fill" v-if="UnwrapFlag.references" @click="RollUp('references')"></i>
+            <i class="bi bi-caret-right-fill" v-else @click="Unwrap('references')"></i>
+            <b>12. Перечень учебной литературы и ресурсов сети Интернет</b>
+        </p>
+        <div v-if="UnwrapFlag['references']">
+
+
+            <div v-html=plan.references></div>
+            <p></p>
+
+        </div>
+    </div>
+
+    <div class="container">
+        <p class="text-left">
+            <i class="bi bi-caret-down-fill" v-if="UnwrapFlag.listInformationTechnologies"
+                @click="RollUp('listInformationTechnologies')"></i>
+            <i class="bi bi-caret-right-fill" v-else @click="Unwrap('listInformationTechnologies')"></i>
+            <b>13. Перечень информационных технологий </b>
+        </p>
+        <div v-if="UnwrapFlag['listInformationTechnologies']">
+
+            <div v-html=plan.listInformationTechnologies></div>
+            <p></p>
+        </div>
+    </div>
+
+    <div class="container">
+        <p class="text-left">
+            <i class="bi bi-caret-down-fill" v-if="UnwrapFlag.materialSupport" @click="RollUp('materialSupport')"></i>
+            <i class="bi bi-caret-right-fill" v-else @click="Unwrap('materialSupport')"></i>
+            <b>14. Материально-техническое обеспечение </b>
+        </p>
+        <div v-if="UnwrapFlag['materialSupport']">
+            <div v-html=plan.materialSupport></div>
+            <p></p>
+
+        </div>
+    </div>
+
+    <div class="container">
+        <p class="text-left">
+            <i class="bi bi-caret-down-fill" v-if="UnwrapFlag.informationDevelopers"
+                @click="RollUp('informationDevelopers')"></i>
+            <i class="bi bi-caret-right-fill" v-else @click="Unwrap('informationDevelopers')"></i>
+            <b>15. Информация о разработчиках </b>
+        </p>
+        <div v-if="UnwrapFlag['informationDevelopers']">
+            <div v-html=plan.informationDevelopers></div>
+        </div>
+        <button type="button" class="btn btn-outline-secondary"
+            @click="$router.push(`/generate/${plan.guid}/pdf`)">Конвертировать в PDF</button>
+    </div>
+
+
+    <!--<button type="button" class="btn btn-primary" @click="$router.push(`/generate/${plan.guid}/word`)">Generate WORD</button> -->
+</div>
 </template>
 
 <script lang="js">
@@ -606,6 +891,8 @@ export default {
             editor: ClassicEditor,
             allConfig:{},
             param:[],
+            admin: false,
+            access: false,
         }
     },
     methods: {
@@ -714,9 +1001,37 @@ export default {
         CloseExamle(key){
             this.exampleFlag[key] = false;
         },
+        async ChekAdmin() {
+            await axios.post('http://192.168.1.56:5050/role/check-admin', {}, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.token}`
+                }
+            })
+                .then((response) => {
+                    this.admin = true;
+                }).catch((error) => {
+                    console.log(error.toJSON())
+                })
+        },
+        async ChekAccess() {
+            await axios.post('http://192.168.1.56:5050/role/check-access', {
+                'GuidNode': this.$route.params.guid
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.token}`
+                }
+            })
+                .then(() => {
+                    this.access = true;
+                }).catch((error) => {
+                    console.log(error.toJSON())
+                })
+        },
     },
     beforeMount() {
         this.GetWorkProgram();
+        this.ChekAdmin();
+        this.ChekAccess();
         window.SaveF = (key, HTMLtext) => this.SaveFieldPlan(key, HTMLtext)
         window.OpenE = (key) => this.OpenExamle(key)
         window.CloseE = (key) => this.CloseExamle(key)
