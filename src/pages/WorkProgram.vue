@@ -1,5 +1,5 @@
 <template>
-    <div id="element-to-print" v-if="access || admin">
+    <div :key="key" id="element-to-print" v-if="access || admin">
     <div class="container">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -460,9 +460,69 @@
                 <p></p>
             </div>
         </div>
-        <button type="button" class="btn btn-outline-secondary" @click="$router.push(`/generate/${plan.guid}/pdf`)">Конвертировать в PDF</button>
+        <div class="container">
+            <div class="row">
+
+                <button type="button" class="btn btn-outline-secondary col-2 m-2"
+                    @click="OpenPWindow">Заполнить из</button>
+                <button type="button" class="btn btn-outline-secondary col-2 m-2" @click="$router.push(`/generate/${plan.guid}/pdf`)">Конвертировать в PDF</button>
+                <div class="col"></div>
+            </div>
+        </div>
     </div>
 
+    <MDBModal id="staticBackdropP" tabindex="-1" labelledby="staticBackdropLabelP" v-model="staticBackdropP"
+        staticBackdropP>
+        <MDBModalHeader>
+            <MDBModalTitle id="staticBackdropLabelP"> Список планов </MDBModalTitle>
+        </MDBModalHeader>
+        <MDBModalBody>
+            <div class="mb-3">
+                <label for="formSearh" class="form-label">Поиск</label>
+                <input type="text" class="form-control" id="formSearh" v-model="searchP">
+            </div>
+    
+            <table class="table table-border table-hover ">
+                <tbody>  
+                    <template v-for:="plan in plans">
+                        <tr v-if="plan.directions.toLowerCase().includes(searchP.toLowerCase()) || plan.name.toLowerCase().includes(searchP.toLowerCase()) || searchP ===''"
+                            @click="OpenDWindow(plan.guid)">
+                            <th scope="row table-active">{{ plan.directions }}</th>
+                            <td>{{ plan.name }}</td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+    
+        </MDBModalBody>
+    </MDBModal>
+
+    <MDBModal id="staticBackdropD" tabindex="-1" labelledby="staticBackdropLabelD" v-model="staticBackdropD" staticBackdropD>
+        <MDBModalHeader>
+            <MDBModalTitle id="staticBackdropLabelD"> Список дисциплин </MDBModalTitle>
+        </MDBModalHeader>
+        <MDBModalBody>
+            <div class="mb-3">
+                <label for="formSearh" class="form-label">Поиск</label>
+                <input type="text" class="form-control" id="formSearh" v-model="searchD">
+            </div>
+    
+            <table class="table table-border table-hover ">
+                <tbody>
+                    <template v-for:="sem in key_plans">
+                        <template v-for:="plan in de[sem]">
+                            <tr v-if="plan.code.toLowerCase().includes(searchD.toLowerCase()) || plan.name.toLowerCase().includes(searchD.toLowerCase()) || searchD ===''"
+                                @click="CopyD(plan.guid)">
+                                <th scope="row table-active">{{ plan.code }}</th>
+                                <td>{{ plan.name }}</td>
+                            </tr>
+                        </template>
+                    </template>
+                </tbody>
+            </table>
+    
+        </MDBModalBody>
+    </MDBModal>
     
     <!--<button type="button" class="btn btn-primary" @click="$router.push(`/generate/${plan.guid}/word`)">Generate WORD</button> -->
 </div>
@@ -875,11 +935,32 @@ class DisallowNestingTables extends Plugin{
 }
 
 const { convert } = require('html-to-text');
+import {
+    MDBModal,
+    MDBModalHeader,
+    MDBModalTitle,
+    MDBModalBody,
+    MDBModalFooter,
+} from 'mdb-vue-ui-kit';
+import { ref } from 'vue';
 
 export default {
     name:'WorkProgram',
     components:{
         ckeditor: CKEditor.component,
+        MDBModal,
+        MDBModalHeader,
+        MDBModalTitle,
+        MDBModalBody,
+        MDBModalFooter,
+    },
+    setup(){
+        const staticBackdropD = ref(false);
+        const staticBackdropP = ref(false);
+        return{
+            staticBackdropD,
+            staticBackdropP,
+        };
     },
     data(){
         return{
@@ -893,6 +974,12 @@ export default {
             param:[],
             admin: false,
             access: false,
+            plans: {},
+            searchP: "",
+            searchD: "",
+            key_plans: [],
+            de: [],
+            key: 0,
         }
     },
     methods: {
@@ -1026,6 +1113,41 @@ export default {
                 }).catch((error) => {
                     console.log(error.toJSON())
                 })
+        },
+        OpenPWindow() {
+            axios.get('http://192.168.1.56:5050/program/get-mas-program/' + this.param[3]).then(response=>{
+                this.plans = response.data;
+                this.staticBackdropP = true;
+            }).catch((error) => {
+                console.log(error.toJSON())
+            })
+        },
+        OpenDWindow(guid_plan){
+            axios.get('http://192.168.1.56:5050/plan/get-mas-plan/' + guid_plan).then(response=>{
+                this.de = response.data;
+                this.key_plans = Object.keys(this.de)
+                for (var key in this.key_plans) {
+                    this.UnwrapFlag[key] = false
+                }
+            }).catch((error) => {
+                console.log(error.toJSON())
+            })
+            this.staticBackdropP = false;
+            this.staticBackdropD = true;
+        },
+        CopyD(guid_from){
+            axios.post(`http://192.168.1.56:5050/plan-auth/copy-plan/${this.$route.params.guid}/${guid_from}`,{},{
+                headers: {
+                    'Authorization': `Bearer ${localStorage.token}`
+                }
+            }).then(()=>{
+                this.staticBackdropD = false;
+                this.GetWorkProgram();
+                this.key+=1;
+                alert("Поля заполнены!")
+            }).catch((error) => {
+                console.log(error.toJSON())
+            })
         },
     },
     beforeMount() {

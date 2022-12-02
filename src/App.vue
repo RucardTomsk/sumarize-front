@@ -295,7 +295,7 @@ export default {
       }).then(()=>{
         this.staticBackdropReset = false;
         alert("Пароль изменён")
-        this.staticBackdropLogin = true;
+        this.staticBackdropLogin = true;l
       }).catch(error=>{
         console.log(error.toJSON())
       })
